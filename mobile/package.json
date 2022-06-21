@@ -15,6 +15,7 @@
     "jsonld": "latest",
     "jsonld-signatures": "^6.0.0",
     "jszip": "^3.5.0",
+    "jwt-decode": "^3.1.2",
     "keycloak-js": "^11.0.3",
     "lodash": "^4.17.21",
     "prop-types": "latest",

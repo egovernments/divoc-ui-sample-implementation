@@ -1,0 +1,9 @@
+.mosip-auth-input {
+    margin: '0.4rem';
+    margin-right: '1rem';
+}
+
+.mosip-auth-error {
+    text-align: 'left';
+    color: 'red';
+}

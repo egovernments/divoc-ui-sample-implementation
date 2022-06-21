@@ -4,7 +4,7 @@ import {getMessageComponent, LANGUAGE_KEYS} from "../../lang/LocaleContext";
 import "./index.css";
 import {CustomButton} from "../CustomButton";
 import {FORM_WALK_IN_ENROLL_FORM, useWalkInEnrollment} from "../WalkEnrollments/context";
-import {FORM_WALK_IN_VERIFY_MOBILE, FORM_WALK_IN_VERIFY_OTP} from "../WalkEnrollments/context";
+import {FORM_WALK_IN_VERIFY_MOBILE, FORM_WALK_IN_VERIFY_OTP, FORM_WALK_IN_MOSIP_ENROLL_FORM} from "../WalkEnrollments/context";
 import {useOnlineStatus} from "../../utils/offlineStatus";
 
 export const VerifyMobile = () => {
@@ -15,10 +15,14 @@ export const VerifyMobile = () => {
 
     function onGetOTP() {
         if (phone.length === 10) {
-            goNext(FORM_WALK_IN_VERIFY_MOBILE, FORM_WALK_IN_VERIFY_OTP, {phone})
+            goNext(FORM_WALK_IN_VERIFY_MOBILE, FORM_WALK_IN_VERIFY_OTP, {phone, maskedEmail: '', from: 'phone'})
         } else {
             setErrors({mobile: "Invalid mobile number"})
         }
+    }
+
+    function goToMosipForm() {
+        goNext(FORM_WALK_IN_ENROLL_FORM, FORM_WALK_IN_MOSIP_ENROLL_FORM, {})
     }
 
     function goToForm() {
@@ -40,6 +44,10 @@ export const VerifyMobile = () => {
                         isOnline ? <CustomButton className="primary-btn w-100" onClick={onGetOTP}>GET OTP</CustomButton> :
                             <CustomButton className="primary-btn w-100" onClick={goToForm}>CONTINUE</CustomButton>
                     }
+                </div>
+                <div className="alternate-auth">
+                    <span id="some">Or</span>
+                    <CustomButton className="primary-btn w-100" onClick={goToMosipForm}>Enter Individual ID</CustomButton>
                 </div>
             </BaseFormCard>
         </div>
