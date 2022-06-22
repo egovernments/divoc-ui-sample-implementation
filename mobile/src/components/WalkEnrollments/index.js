@@ -13,6 +13,7 @@ import {
     initialWalkInEnrollmentState, INVALID_ELIGIBILITY_CRITERIA,
     useWalkInEnrollment,
     WALK_IN_ROUTE,
+    FORM_WALK_IN_MOSIP_ENROLL_FORM,
     WalkInEnrollmentProvider
 } from "./context";
 import Row from "react-bootstrap/Row";
@@ -30,6 +31,8 @@ import {RegisterBeneficiaryForm} from "../RegisterBeneficiaryForm";
 import {WalkInConfirmation} from "../WalkInConfirmation";
 import {CustomButton} from "../CustomButton";
 import {InvalidEligibilityCriteria} from "../InvalidElgiibilityCriteria";
+import { MosipAuth } from "components/MosipAuth";
+
 
 export function WalkEnrollmentFlow(props) {
     return (
@@ -47,8 +50,10 @@ function WalkInEnrollmentRouteCheck({pageName}) {
                 return <SelectComorbidity/>;
             case FORM_WALK_IN_VERIFY_MOBILE:
                 return <VerifyMobile/>;
+            case FORM_WALK_IN_MOSIP_ENROLL_FORM:
+                return <MosipAuth />;
             case FORM_WALK_IN_VERIFY_OTP:
-                return <VerifyOTP/>;
+                return <VerifyOTP />;
             case FORM_WALK_IN_ENROLL_FORM:
                 const onFormContinue = (formData) => {
                     goNext(FORM_WALK_IN_ENROLL_FORM, FORM_WALK_IN_VERIFY_FORM, formData)

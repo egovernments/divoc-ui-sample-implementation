@@ -11,7 +11,7 @@ export const FORM_WALK_IN_VERIFY_FORM = "verify_form";
 export const FORM_WALK_IN_ENROLL_PAYMENTS = "payments";
 export const FORM_WALK_IN_ENROLL_CONFIRMATION = "confirm";
 export const INVALID_ELIGIBILITY_CRITERIA = "invalid_eligibility_criteria"
-
+export const FORM_WALK_IN_MOSIP_ENROLL_FORM = "mosip_individual_id";
 export const WALK_IN_ROUTE = "walkInEnroll";
 
 const WalkInEnrollmentContext = createContext(null);
@@ -56,6 +56,7 @@ function walkInEnrollmentReducer(state, action) {
         case FORM_WALK_IN_VERIFY_MOBILE:
         case FORM_WALK_IN_VERIFY_OTP:
         case FORM_WALK_IN_VERIFY_FORM:
+        case FORM_WALK_IN_MOSIP_ENROLL_FORM:
         case FORM_WALK_IN_ENROLL_CONFIRMATION:
         case INVALID_ELIGIBILITY_CRITERIA:
         case FORM_WALK_IN_ENROLL_PAYMENTS: {

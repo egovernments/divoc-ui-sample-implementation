@@ -16,7 +16,8 @@ const FACILITY_SLOTS = `/divoc/admin/api/v1/facility/${FACILITY_ID}/schedule`
 const ENROLLMENT_BY_CODE = `/divoc/api/v1/preEnrollments/${ENROLLMENT_ID}`
 const VERIFY_CERTIFICATE = "/divoc/api/v1/certificate/revoked"
 const ETCD_APPLICATION_CONFIG = `/divoc/admin/api/v1/config/${ETCD_KEY}`;
-
+const MOSIP_GENERATE_OTP_API = "/divoc/api/citizen/external/mosip/generateOTP";
+const MOSIP_VERIFY_OTP_API = "/divoc/api/citizen/external/mosip/verifyOTP";
 export class ApiServices {
 
     static async login(mobileNumber, otp) {
@@ -237,5 +238,39 @@ export class ApiServices {
                 console.log(e);
                 return e
             });
+    }
+
+    static async generateMosipOTP(data) {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        return fetch(MOSIP_GENERATE_OTP_API, requestOptions)
+            .then(response => response)
+            .catch(e => {
+                console.error(e);
+                throw e;
+            })
+    }
+
+    static async verifyMosipOTP(data) {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        return fetch(MOSIP_VERIFY_OTP_API, requestOptions)
+            .then(response => response)
+            .catch(e => {
+                console.error(e);
+                throw e;
+            })
     }
 }

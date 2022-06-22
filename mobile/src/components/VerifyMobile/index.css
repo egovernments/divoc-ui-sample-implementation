@@ -1,9 +1,56 @@
 .verify-mobile-container {
     padding: 1rem 0.5rem;
-    height: 100%;
     text-align: center;
 }
 
 .verify-mobile-container .mobile-input{
     letter-spacing: 2px;
+}
+
+.phone-alternative::before {
+    width: 50%;
+    text-align: center;
+    border-bottom: 1px dashed black;
+    line-height: 0.1em;
+}
+
+.phone-alternative::after {
+    width: 50%;
+    text-align: center;
+    border-bottom: 1px dashed black;
+    line-height: 0.1em;
+}
+
+.alternate-auth { 
+    padding: 1rem 0.5rem;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+}
+
+#some {
+    text-align: center;
+    width: 100%;
+    font-size: medium;
+    position: relative;
+}
+
+#some:after {
+    content: "";
+    display: block;
+    width: 43%;
+    border-bottom: 1px dashed black;
+    right: 0;
+    top: 50%;
+    position: absolute;
+}
+
+#some:before {
+    content: "";
+    display: block;
+    width: 43%;
+    border-bottom: 1px dashed black;
+    left: 0;
+    top: 50%;
+    position: absolute;
 }
