@@ -53,7 +53,7 @@ function WalkInEnrollmentRouteCheck({pageName}) {
             case FORM_WALK_IN_MOSIP_ENROLL_FORM:
                 return <MosipAuth />;
             case FORM_WALK_IN_VERIFY_OTP:
-                return <VerifyOTP state={state} />;
+                return <VerifyOTP />;
             case FORM_WALK_IN_ENROLL_FORM:
                 const onFormContinue = (formData) => {
                     goNext(FORM_WALK_IN_ENROLL_FORM, FORM_WALK_IN_VERIFY_FORM, formData)

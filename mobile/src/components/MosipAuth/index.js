@@ -3,11 +3,11 @@ import { CustomButton } from "components/CustomButton"
 import { FORM_WALK_IN_MOSIP_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP, useWalkInEnrollment } from "components/WalkEnrollments/context";
 import { ApiServices } from "Services/ApiServices";
 import {getMessageComponent, LANGUAGE_KEYS} from "../../lang/LocaleContext";
-
+import "./index.css";
 
 const { useState, useEffect } = require("react")
 
-export const MosipAuth = ({state}) => {
+export const MosipAuth = () => {
 
     const [individualId, setIndividualId] = useState("")
     const [individualIdType, setIndividualIdType] = useState("VID");
@@ -21,11 +21,7 @@ export const MosipAuth = ({state}) => {
         if(isOTPGenerated) {
             goNext(FORM_WALK_IN_MOSIP_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP, {individualId, individualIdType, from: 'mosip', phone: maskedMobile, maskedEmail});
         }
-    });
-
-    const handleChange = (e) => {
-        setIndividualIdType(e.target.value);
-    }
+    }, [isOTPGenerated]);
 
     const onGenerateOTP = () => {
         var regExp = /[a-zA-Z]/g;
@@ -61,7 +57,7 @@ export const MosipAuth = ({state}) => {
                             type="radio"
                             className="mosip-auth-input" 
                             checked={individualIdType === 'VID'} 
-                            onChange={handleChange} 
+                            onChange={(e) => setIndividualIdType(e.target.value)} 
                             value="VID" 
                         /> Enter VID
                     </div>
@@ -70,7 +66,7 @@ export const MosipAuth = ({state}) => {
                             type="radio"
                             className="mosip-auth-input"
                             checked={individualIdType === 'UIN'}
-                            onChange={handleChange}
+                            onChange={(e) => setIndividualIdType(e.target.value)}
                             value="UIN"
                         /> Enter UIN
                     </div>

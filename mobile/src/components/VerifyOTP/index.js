@@ -9,7 +9,8 @@ import OtpInput from "react-otp-input";
 import { ApiServices } from "Services/ApiServices";
 import decode from "jwt-decode";
 
-export const VerifyOTP = ({state}) => {
+export const VerifyOTP = () => {
+    const {state} = useWalkInEnrollment();
     const [otp, setOTP] = useState("");
     const [errors, setErrors] = useState({});
     const {goNext} = useWalkInEnrollment();
