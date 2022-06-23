@@ -16,7 +16,7 @@ export const MosipAuth = () => {
     const {goNext} = useWalkInEnrollment();
     const [maskedEmail, setMaskedEmail] = useState('');
     const [maskedMobile, setMaskedMobile] = useState('');
-    const [isChecked, setIsChecked] = useState(false);
+    const [consentProvided, setConsentProvided] = useState(false);
 
     useEffect(() => {
         if(isOTPGenerated) {
@@ -25,7 +25,7 @@ export const MosipAuth = () => {
     }, [isOTPGenerated]);
 
     const onGenerateOTP = () => {
-        if(isChecked) {
+        if(consentProvided) {
             var regExp = /[a-zA-Z]/g;
             if(!regExp.test(individualId)) {
                 ApiServices.generateMosipOTP({individualId, individualIdType})
@@ -86,7 +86,7 @@ export const MosipAuth = () => {
                     </div>
                 }
                 <CustomButton className='primary-btn w-100' onClick={onGenerateOTP}>GET OTP</CustomButton>
-                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setIsChecked(e.target.checked)}/>I provide my consent to use my Phone Number</div>
+                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setConsentProvided(e.target.checked)}/>I provide my consent to use my Phone Number</div>
             </div>
         </BaseFormCard>
     </div>
