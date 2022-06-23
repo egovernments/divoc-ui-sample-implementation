@@ -47,7 +47,7 @@ export const VerifyMobile = () => {
                 </div>
                 <div className="alternate-auth">
                     <span id="some">Or</span>
-                    <CustomButton className="primary-btn w-100" onClick={goToMosipForm}>Enter Individual ID</CustomButton>
+                    <CustomButton className="primary-btn w-100" onClick={goToMosipForm}>Enroll using MOSIP ID</CustomButton>
                 </div>
             </BaseFormCard>
         </div>
