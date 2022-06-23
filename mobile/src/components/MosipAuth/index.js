@@ -15,7 +15,8 @@ export const MosipAuth = () => {
     const [error, setError] = useState(null);
     const {goNext} = useWalkInEnrollment();
     const [maskedEmail, setMaskedEmail] = useState('');
-    const [maskedMobile, setMaskedMobile] = useState('')
+    const [maskedMobile, setMaskedMobile] = useState('');
+    const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
         if(isOTPGenerated) {
@@ -24,25 +25,30 @@ export const MosipAuth = () => {
     }, [isOTPGenerated]);
 
     const onGenerateOTP = () => {
-        var regExp = /[a-zA-Z]/g;
-        if(!regExp.test(individualId)) {
-            ApiServices.generateMosipOTP({individualId, individualIdType})
-                .then(async(res) => {
-                    if(res.status === 200) {
-                        res = await res.json();
-                        setMaskedEmail(res.maskedEmail);
-                        setMaskedMobile(res.maskedMobile);
-                        setIsOTPGenerated(true);
-                        return;
-                    }
-                    setIsOTPGenerated(false);
-                    res.json().then(res => setError(res))
-                })
-                .catch((e) => {
-                    setIsOTPGenerated(false);
-                });
-        } else {
-            setError('Invalid ID');
+        if(isChecked) {
+            var regExp = /[a-zA-Z]/g;
+            if(!regExp.test(individualId)) {
+                ApiServices.generateMosipOTP({individualId, individualIdType})
+                    .then(async(res) => {
+                        if(res.status === 200) {
+                            res = await res.json();
+                            setMaskedEmail(res.maskedEmail);
+                            setMaskedMobile(res.maskedMobile);
+                            setIsOTPGenerated(true);
+                            return;
+                        }
+                        setIsOTPGenerated(false);
+                        res.json().then(res => setError(res))
+                    })
+                    .catch((e) => {
+                        setIsOTPGenerated(false);
+                    });
+            } else {
+                setError('Invalid ID');
+            }
+        }
+        else {
+            setError('Please provide consent to use phone number');
         }
     }
 
@@ -79,7 +85,8 @@ export const MosipAuth = () => {
                     {error}
                     </div>
                 }
-                <CustomButton className='primary-btn w-100' onClick={() => onGenerateOTP({individualId, individualIdType})}>GET OTP</CustomButton>
+                <CustomButton className='primary-btn w-100' onClick={onGenerateOTP}>GET OTP</CustomButton>
+                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setIsChecked(e.target.checked)}/>I provide my consent to use my Phone Number</div>
             </div>
         </BaseFormCard>
     </div>
