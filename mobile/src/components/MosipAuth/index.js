@@ -87,7 +87,7 @@ export const MosipAuth = () => {
                     </div>
                 }
                 <CustomButton className='primary-btn w-100' onClick={onGenerateOTP}>GET OTP</CustomButton>
-                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setConsentProvided(e.target.checked)}/>I hearby have taken consent of beneficiary to use his KYC information for the purpose of registering for vaccination program.</div>
+                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setConsentProvided(e.target.checked)}/>I hereby have taken consent of the beneficiary to use their KYC information for the purpose of registering in the vaccination program.</div>
             </div>
         </BaseFormCard>
     </div>
