@@ -4,6 +4,7 @@ import { FORM_WALK_IN_MOSIP_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP, useWalkInEnrol
 import { ApiServices } from "Services/ApiServices";
 import {getMessageComponent, LANGUAGE_KEYS} from "../../lang/LocaleContext";
 import "./index.css";
+import {ID_TYPES} from '../../utils/national-id';
 
 const { useState, useEffect } = require("react")
 
@@ -17,10 +18,10 @@ export const MosipAuth = () => {
     const [maskedEmail, setMaskedEmail] = useState('');
     const [maskedMobile, setMaskedMobile] = useState('');
     const [consentProvided, setConsentProvided] = useState(false);
-
+    const mosip = ID_TYPES.filter(idType => idType.id === 'mosip')[0];
     useEffect(() => {
         if(isOTPGenerated) {
-            goNext(FORM_WALK_IN_MOSIP_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP, {individualId, individualIdType, from: 'mosip', phone: maskedMobile, maskedEmail});
+            goNext(FORM_WALK_IN_MOSIP_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP, {identity: "did:"+mosip.value+ ":" + individualId, individualIdType, from: 'mosip', phone: maskedMobile, maskedEmail});
         }
     }, [isOTPGenerated]);
 
@@ -86,7 +87,7 @@ export const MosipAuth = () => {
                     </div>
                 }
                 <CustomButton className='primary-btn w-100' onClick={onGenerateOTP}>GET OTP</CustomButton>
-                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setConsentProvided(e.target.checked)}/>I provide my consent to use my Phone Number</div>
+                <div style={{'float': 'left'}}><input type="checkbox" style={{'marginRight': '20px'}} required onChange={(e) => setConsentProvided(e.target.checked)}/>I hereby have taken consent of the beneficiary to use their KYC information for the purpose of registering in the vaccination program.</div>
             </div>
         </BaseFormCard>
     </div>
