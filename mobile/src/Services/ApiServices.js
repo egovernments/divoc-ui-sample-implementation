@@ -5,7 +5,7 @@ const AUTHORIZE = "/divoc/api/v1/authorize"
 const PRE_ENROLLMENT = "/divoc/api/v1/preEnrollments"
 const PROGRAMS = "/divoc/api/v1/programs/current"
 const VACCINATORS = "/divoc/admin/api/v1/vaccinators"
-const CERTIFY = "/divoc/api/v1/certify"
+const CERTIFY = "/divoc/api/v3/certify"
 const USER_INFO = "/divoc/api/v1/users/me"
 const FACILITY_DETAILS = "/divoc/admin/api/v1/facility";
 const FACILITY_ID = "FACILITY_ID"
@@ -17,7 +17,7 @@ const ENROLLMENT_BY_CODE = `/divoc/api/v1/preEnrollments/${ENROLLMENT_ID}`
 const VERIFY_CERTIFICATE = "/divoc/api/v1/certificate/revoked"
 const ETCD_APPLICATION_CONFIG = `/divoc/admin/api/v1/config/${ETCD_KEY}`;
 const MOSIP_GENERATE_OTP_API = "/divoc/api/citizen/external/mosip/generateOTP";
-const MOSIP_VERIFY_OTP_API = "/divoc/api/citizen/external/mosip/verifyOTP";
+const MOSIP_KYC_API = "/divoc/api/citizen/external/mosip/kyc";
 export class ApiServices {
 
     static async login(mobileNumber, otp) {
@@ -257,7 +257,7 @@ export class ApiServices {
             })
     }
 
-    static async verifyMosipOTP(data) {
+    static async getKyc(data) {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -266,7 +266,7 @@ export class ApiServices {
             },
             body: JSON.stringify(data)
         }
-        return fetch(MOSIP_VERIFY_OTP_API, requestOptions)
+        return fetch(MOSIP_KYC_API, requestOptions)
             .then(response => response)
             .catch(e => {
                 console.error(e);

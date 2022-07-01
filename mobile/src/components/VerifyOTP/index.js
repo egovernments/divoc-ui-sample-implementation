@@ -7,7 +7,7 @@ import {useWalkInEnrollment} from "../WalkEnrollments/context";
 import {FORM_WALK_IN_ENROLL_FORM, FORM_WALK_IN_VERIFY_OTP} from "../WalkEnrollments/context";
 import OtpInput from "react-otp-input";
 import { ApiServices } from "Services/ApiServices";
-import decode from "jwt-decode";
+import {getNationalIdNumber} from '../../utils/national-id';
 
 export const VerifyOTP = () => {
     const {state} = useWalkInEnrollment();
@@ -15,25 +15,37 @@ export const VerifyOTP = () => {
     const [errors, setErrors] = useState({});
     const {goNext} = useWalkInEnrollment();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [mobileNumber, setMobileNumber] = useState('');
+    const [kycData, setKycData] = useState('');
 
     useEffect(() => {
         if(isAuthenticated) {
-            goNext(FORM_WALK_IN_VERIFY_OTP, FORM_WALK_IN_ENROLL_FORM, {phone: mobileNumber});
+            goNext(FORM_WALK_IN_VERIFY_OTP, FORM_WALK_IN_ENROLL_FORM, kycData);
         }
     })
 
-    function onVerifyOTP() {
+    function formatResponse(res) {
+        const formattedRes = {}
+        formattedRes['name'] = res.name_eng;
+        formattedRes['phone'] = res.phoneNumber;
+        formattedRes['pincode'] = res.postalCode;
+        formattedRes['gender'] = res.gender_eng;
+        formattedRes['email'] = res.emailId;
+        formattedRes['dob'] = res.dob;
+        formattedRes['district'] = res.location2_eng;
+        formattedRes['state'] = res.location3_eng;
+        setKycData(formattedRes);
+    }
+
+    function getKyc() {
         if(state.from === 'mosip') {
-            const individualId = state.individualId;
+            const individualId = getNationalIdNumber(state.identity);
             const individualIdType = state.individualIdType;
-            ApiServices.verifyMosipOTP({individualId, individualIdType, otp})
+            ApiServices.getKyc({individualId, individualIdType, otp})
                 .then(async(res) => {
                     if(res.status === 200) {
                         res = await res.json();
-                        const decodedToken = decode(res.token);
-                        setMobileNumber(decodedToken.Phone? decodedToken.Phone: '');
-                        setIsAuthenticated(true); 
+                        formatResponse(res);
+                        setIsAuthenticated(true);
                         return;
                     }
                     res.json().then(err => setErrors({otp: err}));
@@ -45,6 +57,8 @@ export const VerifyOTP = () => {
             setErrors({otp: "Invalid OTP"})
         }
     }
+
+    
 
     return (
         <div className="new-enroll-container">
@@ -71,7 +85,7 @@ export const VerifyOTP = () => {
                     <div className="invalid-input m-0 text-left">
                         {errors.otp}
                     </div>
-                    <CustomButton className="primary-btn w-100" onClick={onVerifyOTP}>VERIFY</CustomButton>
+                    <CustomButton className="primary-btn w-100" onClick={getKyc}>VERIFY</CustomButton>
                 </div>
             </BaseFormCard>
         </div>
