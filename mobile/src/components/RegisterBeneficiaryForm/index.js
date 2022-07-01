@@ -56,9 +56,9 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
 
     }, [verifyDetails]);
 
-    function setValue(evt) {                        //{target: {name: 'district', 'value': 'Blore'}}
+    function setValue(evt) {
         setFormData((state) => ({
-            ...state,                                      // {district: 'Blore', state:'KA'}
+            ...state,
             [evt.target.name]: evt.target.value
         }))
     }

@@ -23,7 +23,7 @@ export const VerifyOTP = () => {
         }
     })
 
-    function formatResponse(res) {
+    function formatMosipResponse(res) {
         const formattedRes = {}
         formattedRes['name'] = res.name_eng;
         formattedRes['phone'] = res.phoneNumber;
@@ -44,7 +44,7 @@ export const VerifyOTP = () => {
                 .then(async(res) => {
                     if(res.status === 200) {
                         res = await res.json();
-                        formatResponse(res);
+                        formatMosipResponse(res);
                         setIsAuthenticated(true);
                         return;
                     }
