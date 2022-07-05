@@ -99,6 +99,12 @@ export const Home = () => {
         }
     }
 
+    function goToMosipForm() {
+        history.push({
+            pathname: '/mosip'
+        })
+    }
+
     return (
         <div className="home-section">
             <div className="section " style={{maxWidth:"1300px", margin:"auto"}}>
@@ -119,6 +125,10 @@ export const Home = () => {
                                 </div>
                                 <div className="invalid-input">
                                     <p>{mobileNumberErr}</p>
+                                </div>
+                                <div className="alternate-auth">
+                                    <span id="some">Or</span>
+                                    <CustomButton className={"blue-btn"} onClick={goToMosipForm}>Enroll using MOSIP ID</CustomButton>
                                 </div>
                                 <CustomButton className={"blue-btn"} style={{width: "100%"}} onClick={() => buttonLoginOnClick()}>{t('home.login')}</CustomButton>
                             </Col>

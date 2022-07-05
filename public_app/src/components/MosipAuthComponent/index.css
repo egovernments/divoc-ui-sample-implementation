@@ -1,0 +1,10 @@
+.mosip-auth-container {
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+}
+.mosip-auth-radio {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-evenly;
+}
