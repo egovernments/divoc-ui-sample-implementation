@@ -26,15 +26,16 @@ import doseCompletedImg from "../../assets/img/dose-completed.svg";
 import currentDoseImg from "../../assets/img/dose-currentdose.svg";
 import nextDoseImg from "../../assets/img/dose-nextdose.svg";
 import {DosesState} from "../DosesState";
-
+import { useWalkInEnrollment } from "../WalkEnrollments/context";
 const GENDERS = [
     "Male",
     "Female",
     "Other"
 ];
-export const RegisterBeneficiaryForm = ({verifyDetails, state, onBack, onContinue, buttonText}) => {
-    const [formData, setFormData] = useState({...state});
-
+export const RegisterBeneficiaryForm = ({verifyDetails, onBack, onContinue, buttonText}) => {
+    const {state} = useWalkInEnrollment();
+    const [formData, setFormData] = useState(state);
+    debugger
     return (
         <div className="new-enroll-container">
             <BaseFormCard title={getMessageComponent(LANGUAGE_KEYS.ENROLLMENT_TITLE)} onBack={verifyDetails ? () => {
@@ -53,7 +54,6 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
 
     useEffect(() => {
         walkInForm.current.scrollIntoView()
-
     }, [verifyDetails]);
 
     function setValue(evt) {
@@ -321,8 +321,13 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
                         hidden={verifyDetails}>
                     <option disabled selected={!formData.district} value>Select District</option>
                     {
-                        districts.map(d => <option selected={d.name === formData.district}
-                                                   value={d.name}>{d.name}</option>)
+                        districts.map(d => { 
+                            if(d.name.indexOf(formData.district) >= 0) {
+                                formData.district = d.name;
+                                                return <option selected={d.name}
+                                                    value={d.name}>{d.name}
+                                                   </option>}
+                        })
                     }
                 </select>
                 <div className="invalid-input">
