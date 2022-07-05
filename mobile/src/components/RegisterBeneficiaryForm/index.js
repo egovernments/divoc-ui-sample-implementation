@@ -35,7 +35,6 @@ const GENDERS = [
 export const RegisterBeneficiaryForm = ({verifyDetails, onBack, onContinue, buttonText}) => {
     const {state} = useWalkInEnrollment();
     const [formData, setFormData] = useState(state);
-    debugger
     return (
         <div className="new-enroll-container">
             <BaseFormCard title={getMessageComponent(LANGUAGE_KEYS.ENROLLMENT_TITLE)} onBack={verifyDetails ? () => {
@@ -54,8 +53,9 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
 
     useEffect(() => {
         walkInForm.current.scrollIntoView()
-    }, [verifyDetails]);
-
+        setFormData(state);
+    }, [verifyDetails, state]);
+    
     function setValue(evt) {
         setFormData((state) => ({
             ...state,
@@ -318,16 +318,12 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
                 <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"}
                        htmlFor="district">District </label>
                 <select className="form-control" id="district" name="district" onChange={setValue}
-                        hidden={verifyDetails}>
+                        hidden={verifyDetails} >
                     <option disabled selected={!formData.district} value>Select District</option>
                     {
-                        districts.map(d => { 
-                            if(d.name.indexOf(formData.district) >= 0) {
-                                formData.district = d.name;
-                                                return <option selected={d.name}
+                        districts.map(d => <option selected={formData.district !== "" && d.name.indexOf(formData.district) >= 0}
                                                     value={d.name}>{d.name}
-                                                   </option>}
-                        })
+                                                   </option>)
                     }
                 </select>
                 <div className="invalid-input">
