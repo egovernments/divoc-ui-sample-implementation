@@ -35,6 +35,7 @@ const GENDERS = [
 export const RegisterBeneficiaryForm = ({verifyDetails, onBack, onContinue, buttonText}) => {
     const {state} = useWalkInEnrollment();
     const [formData, setFormData] = useState(state);
+    debugger
     return (
         <div className="new-enroll-container">
             <BaseFormCard title={getMessageComponent(LANGUAGE_KEYS.ENROLLMENT_TITLE)} onBack={verifyDetails ? () => {
@@ -50,11 +51,6 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({...state});
-    const [selectedDistrict, setSelectedDistrict] = useState(null);
-
-    function setSelectedDistrictRef(ref) {
-        setSelectedDistrict(ref?.value);
-    }
 
     useEffect(() => {
         walkInForm.current.scrollIntoView()
@@ -124,7 +120,6 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
         if (verifyDetails) {
             onContinue(formData)
         } else {
-            setValue({target: {name: 'district', value: selectedDistrict}});
             if (validateUserDetails()) {
                 alert("Please fill all the required field")
             } else {
@@ -137,7 +132,7 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
         <div className="text-left verify-mobile-container" ref={walkInForm}>
             <IdDetails formData={formData} setValue={setValue} verifyDetails={verifyDetails} errors={errors}/>
             <BeneficiaryDetails formData={formData} setValue={setValue} verifyDetails={verifyDetails}
-                                errors={errors} setSelectedDistrictRef={setSelectedDistrictRef}/>
+                                errors={errors}/>
             <ContactInfo formData={formData} setValue={setValue} verifyDetails={verifyDetails} errors={errors}/>
             <VaccineDetails formData={formData} setValue={setValue} verifyDetails={verifyDetails} errors={errors}/>
             <CustomButton className="primary-btn w-100 mt-5 mb-5"
@@ -261,7 +256,7 @@ const IdDetails = ({verifyDetails, formData, setValue, errors}) => {
     )
 };
 
-const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors, setSelectedDistrictRef}) => {
+const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
     const state_and_districts = useSelector(state => state.etcd.appConfig.stateAndDistricts);
     const STATES = Object.values(state_and_districts['states']).map(obj => obj.name);
 
@@ -322,13 +317,17 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors, setSelec
             <div>
                 <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"}
                        htmlFor="district">District </label>
-                <select className="form-control" id="district" name="district" onChange={setValue} ref={(el) => setSelectedDistrictRef(el)}
+                <select className="form-control" id="district" name="district" onChange={setValue}
                         hidden={verifyDetails}>
                     <option disabled selected={!formData.district} value>Select District</option>
                     {
-                        districts.map(d => <option selected={formData.district && d.name.indexOf(formData.district) >= 0}
-                                    value={d.name}>{d.name}
-                                    </option>)
+                        districts.map(d => { 
+                            if(d.name.indexOf(formData.district) >= 0) {
+                                formData.district = d.name;
+                                                return <option selected={d.name}
+                                                    value={d.name}>{d.name}
+                                                   </option>}
+                        })
                     }
                 </select>
                 <div className="invalid-input">
