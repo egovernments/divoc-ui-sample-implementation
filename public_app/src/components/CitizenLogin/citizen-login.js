@@ -4,24 +4,19 @@ import axios from "axios";
 import {setCookie} from "../../utils/cookies";
 import {CITIZEN_TOKEN_COOKIE_NAME} from "../../constants";
 import {useTranslation} from "react-i18next";
-import { useHistory } from "react-router-dom";
 
 export function CitizenLoginComponent(props) {
     const [state, setState] = useState({
         phoneNumber: (props.location.state && props.location.state.mobileNumber) ? props.location.state.mobileNumber : "",
         otp: "",
-        from: props.location.state.from || 'mobile',
-        showOnlyOTP: props.location.state.from === 'mosip' ? false: true,
+        showOnlyOTP: true,
         invalidOTP: "",
-        invalidMobileNumber: "",
-        individualId: props.location.state.individualId,
-        individualIdType: props.location.state.individualIdType
+        invalidMobileNumber: ""
     });
-    const history = useHistory();
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (props.location.state && props.location.state.mobileNumber && state.from === 'mobile') {
+        if (props.location.state && props.location.state.mobileNumber) {
             getOTPHandler()
         }
     }, [])
@@ -42,7 +37,6 @@ export function CitizenLoginComponent(props) {
             }
         });
     };
-
     const getOTPHandler = () => {
         if (state.phoneNumber.length < 10 || isNaN(state.phoneNumber)) {
             setState((prevState) => {
@@ -55,28 +49,20 @@ export function CitizenLoginComponent(props) {
             const url = '/divoc/api/citizen/generateOTP'
             axios.post(url, {phone: state.phoneNumber})
                 .then((response) => {
-                    if(response.status === 200) {
-                        setState((prevState) => {
-                            return {
-                                ...prevState,
-                                showOnlyOTP: !prevState.showOnlyOTP,
-                                invalidOTP: "",
-                                invalidMobileNumber: ""
-                            }
-                        });
-                    }
+                    setState((prevState) => {
+                        return {
+                            ...prevState,
+                            showOnlyOTP: !prevState.showOnlyOTP,
+                            invalidOTP: "",
+                            invalidMobileNumber: ""
+                        }
+                    });
                 }).catch((error) => {
                 console.log(error)
                 alert(error)
             })
         }
     };
-
-    const verifyOTPHandler = () => {
-        verifyHandler();
-        return;
-    }
-
     const verifyHandler = () => {
         const url = '/divoc/api/citizen/verifyOTP'
         axios.post(url, {phone: state.phoneNumber, otp: state.otp})
@@ -116,26 +102,14 @@ export function CitizenLoginComponent(props) {
             <form>
                 <div className="form-row">
                     <div className="form-group col-sm-3">
-                        {state.phoneNumber &&
-                            <input placeholder={t('login.mobPlaceholder')}
-                               ref={ref => ref && ref.focus()}
-                               className="form-control form-control-lg"
-                               onChange={setMobileNumber}
-                               value={state.phoneNumber}
-                               disabled={!state.showOnlyOTP}
-                               maxLength={10}
-                            />
-                        }
-                        {state.individualId &&
-                            <input placeholder={t('login.mobPlaceholder')}
-                                ref={ref => ref && ref.focus()}
-                                className="form-control form-control-lg"
-                                onChange={setMobileNumber}
-                                value={state.individualId}
-                                disabled={!state.showOnlyOTP}
-                                maxLength={10}
-                            />
-                        }
+                        <input placeholder={t('login.mobPlaceholder')}
+                            ref={ref => ref && ref.focus()}
+                            className="form-control form-control-lg"
+                            onChange={setMobileNumber}
+                            value={state.phoneNumber}
+                            disabled={!state.showOnlyOTP}
+                            maxLength={10}
+                        />
                         <div className="invalid-input">
                             {state.invalidMobileNumber}
                         </div>
@@ -162,7 +136,7 @@ export function CitizenLoginComponent(props) {
                                      onClick={getOTPHandler}><span>{t('login.otpButton')} &#8594;</span></button>;
         const verifyButton = <button disabled={state.otp.length === 0}
                                      className={"custom-button purple-btn"}
-                                     onClick={verifyOTPHandler}><span>{t('login.verifyButton')} &#8594;</span></button>;
+                                     onClick={verifyHandler}><span>{t('login.verifyButton')} &#8594;</span></button>;
         const backButton = <button style={{paddingLeft: "0px"}} className="btn btn-link transparent-button"
                                    onClick={backBtnHandler}>{t('login.backButton')}</button>;
 

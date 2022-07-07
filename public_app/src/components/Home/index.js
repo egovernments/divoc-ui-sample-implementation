@@ -99,12 +99,6 @@ export const Home = () => {
         }
     }
 
-    function goToMosipForm() {
-        history.push({
-            pathname: '/mosip'
-        })
-    }
-
     return (
         <div className="home-section">
             <div className="section " style={{maxWidth:"1300px", margin:"auto"}}>
