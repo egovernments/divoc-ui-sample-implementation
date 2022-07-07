@@ -108,7 +108,8 @@ export function CitizenLoginComponent(props) {
                                onChange={setMobileNumber}
                                value={state.phoneNumber}
                                disabled={!state.showOnlyOTP}
-                               maxLength={10}                        />
+                               maxLength={10}
+                        />
                         <div className="invalid-input">
                             {state.invalidMobileNumber}
                         </div>
