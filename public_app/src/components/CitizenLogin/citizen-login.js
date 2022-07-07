@@ -103,13 +103,12 @@ export function CitizenLoginComponent(props) {
                 <div className="form-row">
                     <div className="form-group col-sm-3">
                         <input placeholder={t('login.mobPlaceholder')}
-                                ref={ref => ref && ref.focus()}
-                                className="form-control form-control-lg"
-                                onChange={setMobileNumber}
-                                value={state.phoneNumber}
-                                disabled={!state.showOnlyOTP}
-                                maxLength={10}
-                        />
+                               ref={ref => ref && ref.focus()}
+                               className="form-control form-control-lg"
+                               onChange={setMobileNumber}
+                               value={state.phoneNumber}
+                               disabled={!state.showOnlyOTP}
+                               maxLength={10}                        />
                         <div className="invalid-input">
                             {state.invalidMobileNumber}
                         </div>
