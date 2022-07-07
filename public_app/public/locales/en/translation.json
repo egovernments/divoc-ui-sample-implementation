@@ -123,7 +123,13 @@
       "emailLabel": "Beneficiary Email ID",
       "emailPlaceholder": "Enter Email ID",
       "verifyEmailLabel": "Verify Beneficiary Email ID",
-      "confirmEmailPlaceholder": "Confirm Email ID"
+      "confirmEmailPlaceholder": "Confirm Email ID",
+      "mosipEnroll": "Enroll using MOSIP ID",
+      "mosipTitle": "Verify with Mosip",
+      "mosipIndividualIdType": "Select Individual Type",
+      "mosipVid": "Enter VID",
+      "mosipUin": "Enter UIN",
+      "mosipKycConsent": "I hereby have taken consent of the beneficiary to use their KYC information for the purpose of registering in the vaccination program."
     },
     "success": {
       "title": "Successfully registered for {{program}}",
@@ -248,6 +254,10 @@
     "nationalityRequired": "* Nationality is required",
     "pincodeInvalid": "* Invalid pin code",
     "genderRequired": "* Gender is required",
-    "emailMismatch": "* Email ID is not matching"
+    "emailMismatch": "* Email ID is not matching",
+    "consentNotProvided": "Please provide consent to fetch KYC",
+    "invalidId": "Invalid ID",
+    "mosipOtpRequired": "OTP is required",
+    "mosipIndividualIDRequired": "IndividualID is required"
   }
 }

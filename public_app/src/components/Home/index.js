@@ -126,10 +126,6 @@ export const Home = () => {
                                 <div className="invalid-input">
                                     <p>{mobileNumberErr}</p>
                                 </div>
-                                <div className="alternate-auth">
-                                    <span id="some">Or</span>
-                                    <CustomButton className={"blue-btn"} onClick={goToMosipForm}>Enroll using MOSIP ID</CustomButton>
-                                </div>
                                 <CustomButton className={"blue-btn"} style={{width: "100%"}} onClick={() => buttonLoginOnClick()}>{t('home.login')}</CustomButton>
                             </Col>
                             <Col>

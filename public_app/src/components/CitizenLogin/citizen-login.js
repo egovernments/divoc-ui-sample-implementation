@@ -73,43 +73,10 @@ export function CitizenLoginComponent(props) {
     };
 
     const verifyOTPHandler = () => {
-        if(state.from === 'mobile') {
-            verifyHandler();
-            return;
-        }
-        verifyMosipOtp();
+        verifyHandler();
+        return;
     }
 
-    const formatMosipResponse = (res) => {
-        const formattedRes = {}
-        formattedRes['name'] = res.name_eng;
-        formattedRes['phone'] = res.phoneNumber;
-        formattedRes['pincode'] = res.postalCode;
-        formattedRes['gender'] = res.gender_eng;
-        formattedRes['email'] = res.emailId;
-        formattedRes['dob'] = res.dob;
-        formattedRes['district'] = res.location2_eng;
-        formattedRes['state'] = res.location3_eng;
-        return formattedRes;
-    }
-
-    const verifyMosipOtp = () => {
-        const url = '/divoc/api/citizen/external/mosip/kyc';
-        axios.post(url, {individualId: state.individualId, individualIdType: state.individualIdType, otp: state.otp}, {headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json'
-        }}).then((response) => {
-            const kycData = formatMosipResponse(response);
-            history.push('/registration', kycData);
-        }).catch(err => {
-            setState(prevState => {
-                return {
-                    ...prevState,
-                    invalidOTP: t('errors.invalidOTP')
-                }
-            })
-        })
-    }
     const verifyHandler = () => {
         const url = '/divoc/api/citizen/verifyOTP'
         axios.post(url, {phone: state.phoneNumber, otp: state.otp})

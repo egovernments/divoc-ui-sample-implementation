@@ -24,7 +24,6 @@ import React from "react";
 import {Appointment} from "./components/Appointment";
 import {AppointmentConfirm} from "./components/AppointmentConfirm";
 import {ViewRecipient} from "./components/ViewRecipient";
-import { MosipAuthComponent } from "./components/MosipAuthComponent";
 
 function App() {
     const {initialized, keycloak} = useKeycloak();
@@ -61,7 +60,6 @@ function App() {
                             <Route exact path={"/addMember"} component={AddMembersFlow} role={RECIPIENT_ROLE} clientId={RECIPIENT_CLIENT_ID}/>
                             <Route exact path={"/member/:enrollment_code"} component={ViewRecipient} role={RECIPIENT_ROLE} clientId={RECIPIENT_CLIENT_ID}/>
                             <Route exact path={"/citizen"} component={CitizenLoginComponent}/>
-                            <Route exact path={"/mosip"} component={MosipAuthComponent} />
                             <Route path='/verification_app' component={() => {
                                 window.location.replace('/verification_app');
                                 return null;
