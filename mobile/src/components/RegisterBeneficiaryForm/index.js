@@ -58,17 +58,20 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
         setFormData(state);
     }, [verifyDetails, state]);
 
-    useEffect(() => {
-        let selectedDistrict = null;
-        Object.values(state_and_districts['states']).forEach(state => {
-            if(state.name.toLowerCase() === formData.state.toLowerCase()) {
-                state.districts.forEach(district => {
-                    if(formData.district !== "" && district.name.indexOf(formData.district) >= 0) {
-                        selectedDistrict = district.name;
-                    }
-                });
+    function getSelectedDistrict(state) {
+        let selectedDistrict = null
+        state.districts.forEach(district => {
+            if(formData.district !== "" && district.name.indexOf(formData.district) >= 0) {
+                selectedDistrict = district.name;
             }
         });
+        return selectedDistrict;
+    }
+
+    useEffect(() => {
+        let selectedDistrict = null;
+        let states = Object.values(state_and_districts['states']).filter(state => state.name.toLowerCase() === formData.state.toLowerCase());
+        states.forEach(state => selectedDistrict = getSelectedDistrict(state));
         if(selectedDistrict !== null) {
             setFormData({...formData, district: selectedDistrict});
         }
