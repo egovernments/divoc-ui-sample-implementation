@@ -51,10 +51,28 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({...state});
 
+    const state_and_districts = useSelector(state => state.etcd.appConfig.stateAndDistricts);
+
     useEffect(() => {
         walkInForm.current.scrollIntoView()
         setFormData(state);
     }, [verifyDetails, state]);
+
+    useEffect(() => {
+        let selectedDistrict = null;
+        Object.values(state_and_districts['states']).forEach(state => {
+            if(state.name.toLowerCase() === formData.state.toLowerCase()) {
+                state.districts.forEach(district => {
+                    if(formData.district !== "" && district.name.indexOf(formData.district) >= 0) {
+                        selectedDistrict = district.name;
+                    }
+                });
+            }
+        });
+        if(selectedDistrict !== null) {
+            setFormData({...formData, district: selectedDistrict});
+        }
+    }, [])
     
     function setValue(evt) {
         setFormData((state) => ({
@@ -264,12 +282,12 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
     const [nationalities, setNationalities] = useState([]);
 
     useEffect(() => {
-        setDistictsForState(formData.state)
+        setDistictsForState(formData.state);
         applicationConfigsDB.getApplicationConfigs()
             .then(res => {
                 setNationalities(res.nationalities)
             })
-    }, []);
+    }, [formData]);
 
     function onStateSelected(stateSelected) {
         setValue({target: {name: "state", value: stateSelected}});
@@ -317,11 +335,11 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
             <div>
                 <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"}
                        htmlFor="district">District </label>
-                <select className="form-control" id="district" name="district" onChange={setValue}
+                <select value={formData.district !== "" ? formData.district: null} className="form-control" id="district" name="district" onChange={setValue}
                         hidden={verifyDetails} >
                     <option disabled selected={!formData.district} value>Select District</option>
                     {
-                        districts.map(d => <option selected={formData.district !== "" && d.name.indexOf(formData.district) >= 0}
+                        districts.map(d => <option selected={d.name === formData.district}
                                                     value={d.name}>{d.name}
                                                    </option>)
                     }
