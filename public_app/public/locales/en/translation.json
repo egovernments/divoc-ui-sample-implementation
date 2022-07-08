@@ -129,7 +129,7 @@
       "mosipIndividualIdType": "Select Individual Type",
       "mosipVid": "Enter VID",
       "mosipUin": "Enter UIN",
-      "mosipKycConsent": "I hereby have taken consent of the beneficiary to use their KYC information for the purpose of registering in the vaccination program."
+      "mosipKycConsent": "I hereby give consent to use my KYC information for the purpose of registering in the vaccination program."
     },
     "success": {
       "title": "Successfully registered for {{program}}",
