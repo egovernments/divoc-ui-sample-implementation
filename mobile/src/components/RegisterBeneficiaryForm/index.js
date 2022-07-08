@@ -26,15 +26,15 @@ import doseCompletedImg from "../../assets/img/dose-completed.svg";
 import currentDoseImg from "../../assets/img/dose-currentdose.svg";
 import nextDoseImg from "../../assets/img/dose-nextdose.svg";
 import {DosesState} from "../DosesState";
-
+import { useWalkInEnrollment } from "../WalkEnrollments/context";
 const GENDERS = [
     "Male",
     "Female",
     "Other"
 ];
-export const RegisterBeneficiaryForm = ({verifyDetails, state, onBack, onContinue, buttonText}) => {
-    const [formData, setFormData] = useState({...state});
-
+export const RegisterBeneficiaryForm = ({verifyDetails, onBack, onContinue, buttonText}) => {
+    const {state} = useWalkInEnrollment();
+    const [formData, setFormData] = useState(state);
     return (
         <div className="new-enroll-container">
             <BaseFormCard title={getMessageComponent(LANGUAGE_KEYS.ENROLLMENT_TITLE)} onBack={verifyDetails ? () => {
@@ -51,11 +51,32 @@ export function BeneficiaryForm({verifyDetails, state, onContinue, buttonText}) 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({...state});
 
+    const state_and_districts = useSelector(state => state.etcd.appConfig.stateAndDistricts);
+
     useEffect(() => {
         walkInForm.current.scrollIntoView()
+        setFormData(state);
+    }, [verifyDetails, state]);
 
-    }, [verifyDetails]);
+    function getSelectedDistrict(state) {
+        let selectedDistrict = null
+        state.districts.forEach(district => {
+            if(formData.district !== "" && district.name.indexOf(formData.district) >= 0) {
+                selectedDistrict = district.name;
+            }
+        });
+        return selectedDistrict;
+    }
 
+    useEffect(() => {
+        let selectedDistrict = null;
+        let states = Object.values(state_and_districts['states']).filter(state => state.name.toLowerCase() === formData.state.toLowerCase());
+        states.forEach(state => selectedDistrict = getSelectedDistrict(state));
+        if(selectedDistrict !== null) {
+            setFormData({...formData, district: selectedDistrict});
+        }
+    }, [])
+    
     function setValue(evt) {
         setFormData((state) => ({
             ...state,
@@ -264,12 +285,12 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
     const [nationalities, setNationalities] = useState([]);
 
     useEffect(() => {
-        setDistictsForState(formData.state)
+        setDistictsForState(formData.state);
         applicationConfigsDB.getApplicationConfigs()
             .then(res => {
                 setNationalities(res.nationalities)
             })
-    }, []);
+    }, [formData]);
 
     function onStateSelected(stateSelected) {
         setValue({target: {name: "state", value: stateSelected}});
@@ -317,12 +338,13 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors}) => {
             <div>
                 <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"}
                        htmlFor="district">District </label>
-                <select className="form-control" id="district" name="district" onChange={setValue}
-                        hidden={verifyDetails}>
+                <select value={formData.district !== "" ? formData.district: null} className="form-control" id="district" name="district" onChange={setValue}
+                        hidden={verifyDetails} >
                     <option disabled selected={!formData.district} value>Select District</option>
                     {
                         districts.map(d => <option selected={d.name === formData.district}
-                                                   value={d.name}>{d.name}</option>)
+                                                    value={d.name}>{d.name}
+                                                   </option>)
                     }
                 </select>
                 <div className="invalid-input">
