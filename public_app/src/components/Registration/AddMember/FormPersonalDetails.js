@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Modal, Row} from "react-bootstrap";
 import {CustomButton} from "../../CustomButton";
 import {maskPersonalDetails} from "../../../utils/maskPersonalDetails";
 import axios from "axios";
@@ -12,26 +12,10 @@ import {
 } from "../../../constants";
 import {getUserNumberFromRecipientToken} from "../../../utils/reciepientAuth";
 import {getCookie} from "../../../utils/cookies";
-import {
-    AADHAAR_ERROR_MESSAGE,
-    DISTRICT_ERROR_MSG,
-    EMAIL_ERROR_MESSAGE,
-    GENDER_ERROR_MSG,
-    INVALID_NAME_ERR_MSG,
-    MAXIMUM_LENGTH_OF_NAME_ERROR_MSG,
-    MINIMUM_LENGTH_OF_NAME_ERROR_MSG,
-    NAME_ERROR_MSG,
-    NATIONAL_ID_ERROR_MSG,
-    NATIONAL_ID_TYPE_ERROR_MSG,
-    PINCODE_ERROR_MESSAGE,
-    STATE_ERROR_MSG,
-    DUPLICATE_NAME_YOB,
-    DUPLICATE_NATIONAL_ID_ERR_MSG,
-    NATIONALITY_ERROR_MSG
-} from "./error-constants";
 import {isInValidAadhaarNumber, isValidName, isValidPincode} from "../../../utils/validations";
 import {constuctNationalId, getNationalIdNumber, getNationalIdType, ID_TYPES} from "../../../utils/national-id";
 import {useTranslation} from "react-i18next";
+import { MosipAuthComponent } from "../../MosipAuthComponent";
 
 const GENDERS = [
     "Male",
@@ -50,6 +34,7 @@ export const FormPersonalDetails = ({ setValue, formData, navigation, verifyDeta
     const [stateAndDistricts, setStateAndDistricts] = useState({});
     const [nationalities, setNationalities] = useState([]);
     const {t} = useTranslation();
+    const [showKycModal, setShowKycModal] = useState(false);
 
     useEffect(() => {
         let apiUrl = CONFIG_API.replace(CONFIG_KEY, COUNTRY_SPECIFIC_FEATURES_KEY)
@@ -179,11 +164,50 @@ export const FormPersonalDetails = ({ setValue, formData, navigation, verifyDeta
                 alert("Error while registering, please try again later.\n" + err);
             });
     };
+
+    function getSelectedDistrict(state, kycDistrict) {
+        let selectedDistrict = null;
+        state.districts.forEach(district => {
+            if(kycDistrict !== "" && district.name.indexOf(kycDistrict) >= 0) {
+                selectedDistrict = district.name;
+            }
+        })
+        return selectedDistrict;
+    }
+
+    const updateFormData = (kycData) => {
+        let selectedDistrict = null;
+        let states = stateAndDistricts.states.filter(state => state.name.toLowerCase() === kycData.state.toLowerCase());
+        states.forEach(state => selectedDistrict = getSelectedDistrict(state, kycData.district));
+        if(selectedDistrict !== null) {
+            setValue({target: {name: 'district', value: selectedDistrict}});
+        }
+        else {
+            setValue({target: {name: 'district', value: ''}});
+        }
+        setValue({target: {name: 'name', value: kycData.name}});
+        setValue({target: {name: 'identity', value: kycData.identity}});
+        setValue({target: {name: 'gender', value: kycData.gender}});
+        setValue({target: {name: 'email', value: kycData.email}});
+        setValue({target: {name: 'pincode', value: kycData.pincode}});
+        setValue({target: {name: 'state', value: kycData.state}});
+        
+        setShowKycModal(false);
+    }
+
+    const onCloseMosipModal = () => {
+        setShowKycModal(false);
+    }
+
     return (
         <Container fluid>
             <div className="side-effect-container">
                 {
                     header ? header : <h3>{verifyDetails ? t('registration.formDetails.verifyBeneficiaryTitle') : t('registration.formDetails.addBeneficiaryTitle')}</h3>
+                }
+
+                {
+                    (!verifyDetails) && <CustomButton className={"blue-btn"} onClick={() => setShowKycModal(true)}>{t('registration.formDetails.mosipEnroll')}</CustomButton>
                 }
 
                 <div className="shadow-sm bg-white form-container">
@@ -209,6 +233,16 @@ export const FormPersonalDetails = ({ setValue, formData, navigation, verifyDeta
                     </div>
                 }
             </div>
+            <Modal size="lg" show={showKycModal} onHide={onCloseMosipModal} centered aria-labelledby="contained-modal-title-vcenter">
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        {t('registration.formDetails.mosipTitle')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <MosipAuthComponent updateFormData={updateFormData} />
+                </Modal.Body>
+            </Modal>
         </Container>
 
     )
@@ -266,7 +300,8 @@ const ContactInfo = ({verifyDetails, formData, setValue, errors}) => {
                                        onPaste={(e) => {e.preventDefault()}}
                                        onDrag={(e) => {e.preventDefault()}}
                                        onDrop={(e) => {e.preventDefault()}}
-                                       onChange={(e) => setValue({target: {name:"confirmEmail", value:e.target.value}})}
+                                       onChange={(e) => 
+                                        setValue({target: {name:"confirmEmail", value:e.target.value}})}
                                 />
                             </div>
                             <div className="invalid-input">
@@ -425,7 +460,7 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors, stateAnd
 
     useEffect(() => {
         setDistictsForState(formData.state)
-    }, [stateAndDistricts]);
+    }, [stateAndDistricts, formData.state]);
 
     function onStateSelected(stateSelected) {
         setValue({target: {name:"state", value:stateSelected}});
@@ -478,7 +513,9 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors, stateAnd
                         <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"} htmlFor="district">
                             {t('registration.formDetails.districtLabel')}
                         </label>
-                        <select className="form-control" id="district" name="district" onChange={setValue} hidden={verifyDetails}>
+                        <select value={
+                            formData.district !== "" ? formData.district : null
+                            } className="form-control" id="district" name="district" onChange={setValue} hidden={verifyDetails}>
                             <option disabled selected={!formData.district} value>{t('registration.formDetails.districtPlaceholder')}</option>
                             {
                                 districts.map(d => <option selected={d.name === formData.district} value={d.name}>{d.name}</option>)

@@ -49,5 +49,10 @@ export const ID_TYPES = [
         "id": "id",
         "name": "Official Identity Card issued to MPs/MLAs",
         "value": "in.gov.id"
+    },
+    {
+        "id": "mosip",
+        "name": "MOSIP",
+        "value": "in.gov.mosip"
     }
 ];

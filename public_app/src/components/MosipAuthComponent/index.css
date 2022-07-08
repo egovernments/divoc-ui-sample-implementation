@@ -1,0 +1,19 @@
+.mosip-auth-container {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 10px;
+}
+.mosip-auth-radio {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-evenly;
+}
+
+.mosip-individual-id, .mosip-consent {
+    margin-top: 20px;
+}
+
+.mosip-auth-error {
+    text-align: left;
+    color: red;
+}
