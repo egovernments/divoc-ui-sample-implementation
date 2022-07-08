@@ -165,17 +165,20 @@ export const FormPersonalDetails = ({ setValue, formData, navigation, verifyDeta
             });
     };
 
+    function getSelectedDistrict(state, kycDistrict) {
+        let selectedDistrict = null;
+        state.districts.forEach(district => {
+            if(kycDistrict !== "" && district.name.indexOf(kycDistrict) >= 0) {
+                selectedDistrict = district.name;
+            }
+        })
+        return selectedDistrict;
+    }
+
     const updateFormData = (kycData) => {
         let selectedDistrict = null;
-        stateAndDistricts.states.forEach(state => {
-            if(state.name === kycData.state) {
-                state.districts.forEach(district => {
-                    if(kycData.district !== "" && district.name.indexOf(kycData.district) >= 0) {
-                        selectedDistrict = district.name;
-                    }
-                })
-            }
-        });
+        let states = stateAndDistricts.states.filter(state => state.name.toLowerCase() === kycData.state.toLowerCase());
+        states.forEach(state => selectedDistrict = getSelectedDistrict(state, kycData.district));
         if(selectedDistrict !== null) {
             setValue({target: {name: 'district', value: selectedDistrict}});
         }
@@ -510,10 +513,12 @@ const BeneficiaryDetails = ({verifyDetails, formData, setValue, errors, stateAnd
                         <label className={verifyDetails ? "custom-verify-text-label" : "custom-text-label required"} htmlFor="district">
                             {t('registration.formDetails.districtLabel')}
                         </label>
-                        <select value={formData.district} className="form-control" id="district" name="district" onChange={setValue} hidden={verifyDetails}>
+                        <select value={
+                            formData.district !== "" ? formData.district : null
+                            } className="form-control" id="district" name="district" onChange={setValue} hidden={verifyDetails}>
                             <option disabled selected={!formData.district} value>{t('registration.formDetails.districtPlaceholder')}</option>
                             {
-                                districts.map(d => <option selected={d.name} value={d.name}>{d.name}</option>)
+                                districts.map(d => <option selected={d.name === formData.district} value={d.name}>{d.name}</option>)
                             }
                         </select>
                         <div className="invalid-input">
