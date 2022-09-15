@@ -14,7 +14,7 @@ import config, {
 import {pathOr} from "ramda";
 import {CustomButton} from "../CustomButton";
 import {CertificateDetailsPaths} from "../../constants";
-import {useDispatch} from "react-redux";
+//import {useDispatch} from "react-redux";
 import {addEventAction, EVENT_TYPES} from "../../redux/reducers/events";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
@@ -24,8 +24,6 @@ import {useTranslation} from "react-i18next";
 const {contexts} = require('security-context');
 const credentialsv1 = require('../../utils/credentials.json');
 const {vaccinationContext, vaccinationContextV2} = require('vaccination-context');
-
-const {verifyJSON, init_signer} = require('certificate-signer-library');
 
 let signingConfig = {
     publicKeyPem: config.certificatePublicKey,
@@ -45,68 +43,66 @@ let documentLoaderMapping = {
     [CERTIFICATE_NAMESPACE_V2]: vaccinationContextV2,
 }
 
+let suspendedDate ="";
 export const CertificateStatus = ({certificateData, goBack}) => {
     const [isLoading, setLoading] = useState(true);
     const [isValid, setValid] = useState(false);
+    const [isSuspended, setSuspended] = useState(false)
     const [isRevoked, setRevoked] = useState(false);
     const [data, setData] = useState({});
     const history = useHistory();
     const {t} = useTranslation();
 
-    setTimeout(()=>{
-        try {
-            axios
-              .post("/divoc/api/v1/events/", [{"date":new Date().toISOString(), "type":"verify"}])
-              .catch((e) => {
-                console.log(e);
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    }, 100)
+    // setTimeout(()=>{
+    //     try {
+    //         axios
+    //           .post("/divoc/api/v1/events/", [{"date":new Date().toISOString(), "type":"verify"}])
+    //           .catch((e) => {
+    //             console.log(e);
+    //         });
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }, 100)
 
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
     useEffect(() => {
         setLoading(true);
-        init_signer(signingConfig, {}, documentLoaderMapping);
         async function verifyData() {
             try {
+                console.log("certificateData: ",certificateData);
                 const signedJSON = JSON.parse(certificateData);
-                const result = await verifyJSON(signedJSON);
-                if (result.verified) {
-                    const revokedResponse = await checkIfRevokedCertificate(signedJSON);
-                    if (revokedResponse.status === 404) {
-                        console.log('Signature verified.');
-                        setValid(true);
-                        setData(signedJSON);
-                        setRevoked(false);
-                        dispatch(addEventAction({
-                            type: EVENT_TYPES.VALID_VERIFICATION,
-                            extra: signedJSON.credentialSubject
-                        }));
-                        setLoading(false);
-                        return
-                    }else if(revokedResponse.status === 200){
-                        console.log('Certificate revoked.');
-                        setValid(false);
-                        setData(signedJSON);
-                        setRevoked(true);
-                        dispatch(addEventAction({
-                            type: EVENT_TYPES.REVOKED_CERTIFICATE,
-                            extra: signedJSON.credentialSubject
-                        }));
-                        setLoading(false);
-                        return
-                    }
+                const result = await verifyCertificate(signedJSON);
+                let msg = result.data.status.msg;
+                switch (result.data.status.certificateStatus){
+                    case "VALID" : 
+                            setValid(true);
+                            setData(signedJSON);
+                            setRevoked(false);
+                            setSuspended(false);
+                        break;
+                    case "SUSPENDED":
+                            setValid(false);
+                            setData(signedJSON);
+                            setRevoked(true);
+                            setSuspended(true);
+                            suspendedDate = msg.substring(msg.lastIndexOf(' ') + 1);
+                        break;
+                    case "REVOKED":
+                            setValid(false);
+                            setData(signedJSON);
+                            setRevoked(true);
+                            setSuspended(false);
+                        break;
+                    default: 
+                            setValid(false);
+                            setData(signedJSON);
+                            setRevoked(false);
+                            setSuspended(false);;
                 }
-                dispatch(addEventAction({type: EVENT_TYPES.INVALID_VERIFICATION, extra: signedJSON}));
-                setValid(false);
-                setLoading(false);
             } catch (e) {
                 console.log('Invalid data', e);
                 setValid(false);
-                dispatch(addEventAction({type: EVENT_TYPES.INVALID_VERIFICATION, extra: certificateData}));
-
             } finally {
                 setLoading(false);
             }
@@ -117,16 +113,12 @@ export const CertificateStatus = ({certificateData, goBack}) => {
 
     }, []);
 
-    async function checkIfRevokedCertificate(data) {
-        return axios
-            .post("/divoc/api/v1/certificate/revoked", data)
-            .then((res) => {
-                dispatch(addEventAction({type: EVENT_TYPES.REVOKED_CERTIFICATE, extra: certificateData}));
-                return res
-            }).catch((e) => {
-                console.log(e.response);
-                return e.response
-            });
+    async function verifyCertificate(data) {
+        return axios.post("/vc-certification/v1/certificate/verify",data,{headers: {Authorization: ""}})
+                .catch((e) => {
+                    console.log(e.response);
+                    return e.response
+                });
     }
 
     return (
@@ -136,11 +128,12 @@ export const CertificateStatus = ({certificateData, goBack}) => {
                          className="certificate-status-image"/>
                     <h3 className="certificate-status">
                         {
-                            isValid ? t('verifyCertificate.validStatus') : (isRevoked ? t('verifyCertificate.revokedStatus') : t('verifyCertificate.invalidStatus'))
+                            isValid ? t('verifyCertificate.validStatus') : (isRevoked ? (isSuspended ? t('verifyCertificate.suspendedStatus') : t('verifyCertificate.revokedStatus')) : t('verifyCertificate.invalidStatus'))
                         }
                     </h3>
                     {
-                        isRevoked   && <h4>{ t('verifyCertificate.revokeText')}</h4>
+                        isRevoked   && (isSuspended ? <h4>{ t('verifyCertificate.suspendText',{suspendedDate: new Date(suspendedDate)})}</h4> : <h4>{ t('verifyCertificate.revokeText')}</h4>)
+                        
                     }
                     {
                         isValid && <table className="mt-3">
