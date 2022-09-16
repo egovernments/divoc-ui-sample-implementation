@@ -14,7 +14,6 @@ import config, {
 import {pathOr} from "ramda";
 import {CustomButton} from "../CustomButton";
 import {CertificateDetailsPaths} from "../../constants";
-//import {useDispatch} from "react-redux";
 import {addEventAction, EVENT_TYPES} from "../../redux/reducers/events";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
@@ -53,53 +52,37 @@ export const CertificateStatus = ({certificateData, goBack}) => {
     const history = useHistory();
     const {t} = useTranslation();
 
-    // setTimeout(()=>{
-    //     try {
-    //         axios
-    //           .post("/divoc/api/v1/events/", [{"date":new Date().toISOString(), "type":"verify"}])
-    //           .catch((e) => {
-    //             console.log(e);
-    //         });
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }, 100)
-
-    //const dispatch = useDispatch();
     useEffect(() => {
         setLoading(true);
         async function verifyData() {
             try {
-                console.log("certificateData: ",certificateData);
                 const signedJSON = JSON.parse(certificateData);
                 const result = await verifyCertificate(signedJSON);
-                let msg = result.data.status.msg;
-                switch (result.data.status.certificateStatus){
+                let msg = result.status.msg;
+                console.log(result.status)
+                switch (result.status.certificateStatus){
                     case "VALID" : 
                             setValid(true);
-                            setData(signedJSON);
                             setRevoked(false);
                             setSuspended(false);
                         break;
                     case "SUSPENDED":
                             setValid(false);
-                            setData(signedJSON);
                             setRevoked(true);
                             setSuspended(true);
                             suspendedDate = msg.substring(msg.lastIndexOf(' ') + 1);
                         break;
                     case "REVOKED":
                             setValid(false);
-                            setData(signedJSON);
                             setRevoked(true);
                             setSuspended(false);
                         break;
                     default: 
                             setValid(false);
-                            setData(signedJSON);
                             setRevoked(false);
                             setSuspended(false);;
                 }
+                setData(signedJSON);
             } catch (e) {
                 console.log('Invalid data', e);
                 setValid(false);
@@ -115,6 +98,7 @@ export const CertificateStatus = ({certificateData, goBack}) => {
 
     async function verifyCertificate(data) {
         return axios.post("/vc-certification/v1/certificate/verify",data,{headers: {Authorization: ""}})
+                .then(res => res.data)
                 .catch((e) => {
                     console.log(e.response);
                     return e.response
