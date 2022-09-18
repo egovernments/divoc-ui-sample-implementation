@@ -20,6 +20,7 @@ import {useHistory} from "react-router-dom";
 import axios from "axios";
 import {Loader} from "../Loader";
 import {useTranslation} from "react-i18next";
+import {formatDate} from "../../utils/CustomDate";
 
 const {contexts} = require('security-context');
 const credentialsv1 = require('../../utils/credentials.json');
@@ -52,6 +53,48 @@ export const CertificateStatus = ({certificateData, goBack}) => {
     const [data, setData] = useState({});
     const history = useHistory();
     const {t} = useTranslation();
+    const excludeFromDisplay = ['0','1','type', 'nonTransferable', 'verificationMethod','proofPurpose','jws'];
+    let destructuredData = {};
+    const certJson = JSON.parse(certificateData);
+    const processData = {...certJson};
+    let displayData={};
+    
+   const destructure = (processData) => {
+     
+    for (let key in processData) {
+        if((key === 'type') || (key === '@context') ){
+            continue;
+        }
+        const value = processData[key];
+        const type = typeof value;
+        if (['string'].includes(type) ) {
+            destructuredData[key] = value;
+        } else if (type === 'object') {
+            Object.assign(destructuredData, destructure(value));
+        }
+    }
+    return destructuredData;
+}
+
+
+    const formatQRData = () => {
+        
+        displayData = destructure(processData);
+     
+    for( var key in displayData){
+        if(excludeFromDisplay.find((str) => str === key)){
+            delete displayData[key];
+            }
+            var parsedDate = Date.parse(displayData[key]);
+            if (isNaN(displayData[key]) && !isNaN(parsedDate)) {
+                displayData[key] = formatDate(new Date(parsedDate).toISOString());
+                console.log(formatDate(new Date(parsedDate).toISOString()));
+            }   
+       }
+       console.log(displayData);
+    return displayData;
+}
+
 
     setTimeout(()=>{
         try {
@@ -145,12 +188,12 @@ export const CertificateStatus = ({certificateData, goBack}) => {
                     {
                         isValid && <table className="mt-3">
                             {
-                                Object.keys(CertificateDetailsPaths).map((key, index) => {
-                                    const context = CertificateDetailsPaths[key];
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pr-3">{t('certificate.'+key)}</td>
-                                            <td className="font-weight-bolder">{context.format(pathOr("NA", context.path, data))}</td>
+                            
+                            Object.keys(formatQRData()).map((key, index) => {
+                                return (
+                                       <tr style={{textAlign: "left"}} key={index}>
+                                            <td  className="pr-3">{(key)}</td>
+                                            <td className="font-weight-bolder">{ displayData[key] ? displayData[key] : "NA"}</td>
                                         </tr>
                                     )
                                 })
