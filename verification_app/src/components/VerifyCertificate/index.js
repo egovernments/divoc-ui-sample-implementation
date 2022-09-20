@@ -81,7 +81,7 @@ export const VerifyCertificate = () => {
                 </>
             }
             {
-               result && (config.CERTIFICATE_STATUS_VC ? 
+               result && (JSON.parse(config.CERTIFICATE_STATUS_VC) ? 
                         <VcCertificateStatus certificateData={result} goBack={() => {
                             setShowScanner(false);
                             setShowTimeout(false);
