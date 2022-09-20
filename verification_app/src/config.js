@@ -11,6 +11,8 @@ const CERTIFICATE_SCAN_TIMEOUT = process.env.REACT_APP_CERTIFICATE_SCAN_TIMEOUT 
 const CERTIFICATE_SIGNED_KEY_TYPE = process.env.REACT_APP_CERTIFICATE_SIGNED_KEY_TYPE || 'RSA';
 const certificatePublicKeyBase58 = process.env.REACT_APP_CERTIFICATE_PUBLIC_KEY_BASE58 || "DaipNW4xaH2bh1XGNNdqjnSYyru3hLnUgTBSfSvmZ2hi";
 
+const CERTIFICATE_STATUS_VC = process.env.REACT_CERTIFICATE_STATUS_VC || true;
+
 module.exports = {
     urlPath,
     certificatePublicKey,
@@ -22,5 +24,6 @@ module.exports = {
     CERTIFICATE_PUBKEY_ID,
     CERTIFICATE_SCAN_TIMEOUT,
     CERTIFICATE_SIGNED_KEY_TYPE,
-    certificatePublicKeyBase58
+    certificatePublicKeyBase58,
+    CERTIFICATE_STATUS_VC
 };
