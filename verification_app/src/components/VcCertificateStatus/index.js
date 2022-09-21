@@ -99,7 +99,7 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
     }, []);
 
     async function verifyCertificate(data) {
-        return axios.post("/vc-certification/v1/certificate/verify",data,{headers: {Authorization: ""}})
+        return axios.post("/vc-certification/v1/certificate/verify",data)
                 .then(res => res.data)
                 .catch((e) => {
                     console.log(e.response);
