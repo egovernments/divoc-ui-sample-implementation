@@ -9,6 +9,7 @@ export const EVENT_TYPES = {
     VALID_VERIFICATION: "valid-verification",
     INVALID_VERIFICATION: "invalid-verification",
     REVOKED_CERTIFICATE: "revoked-certificate",
+    SUSPENDED_CERTIFICATE: "suspended-certificate",
 };
 const initialState = {
     data: [],

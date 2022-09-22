@@ -195,7 +195,9 @@
     "validStatus": "Successful",
     "invalidStatus": "Invalid Certificate",
     "revokedStatus": "Certificate Revoked",
+    "suspendedStatus": "Certificate Suspended",
     "revokeText": "Your Certificate has been revoked",
+    "suspendText": "Your Certificate has been suspended",
     "verifyAnotherCertificate": "Verify Another Certificate",
     "infoCard": [
       {
