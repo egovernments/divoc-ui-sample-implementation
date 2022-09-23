@@ -107,6 +107,61 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                 });
     }
 
+    const convertToString = (value) => {
+        let str = '';
+        str += Object.keys(value)
+            .filter((a) => {
+                if (typeof value[a] === 'object') return convertToString(value[a]);
+                return value[a] !== '';
+            })
+            .map((a) => {
+                if (typeof value[a] === 'object') return convertToString(value[a]);
+                return value[a];
+            });
+        return str;
+    };
+      
+    const getPathAndKey = (data, key) => {
+        let arr = [];
+        for (let i = 0; i < key.t.length; i++) {
+            if (Array.isArray(data[key.keys])) {
+            for (let j = 0; j < data[key.keys].length; j++) {
+                arr.push({ path: [key.keys, j, key.t[i]], key: key.t[i] });
+            }
+            } else {
+            arr.push({ path: [key.keys, key.t[i]], key: key.t[i] });
+            }
+        }
+        return arr;
+    }
+      
+    const getRequiredFieldsToShow = (data, keys) => {
+        const temp = Array.isArray(data[keys])
+            ? data[keys][0]
+            : data[keys];
+        const t = Object.keys(temp).filter(
+            (key) =>
+            key !== 'type' &&
+            key.toLowerCase().indexOf('id') < 0 &&
+            key.toLowerCase().indexOf('url') < 0
+        );
+        return { keys, t };
+    }
+    
+    const getRow = (context, index) => {
+        return (
+            <tr key={index}>
+                <td className="pr-3">{context.key}</td>
+                <td className="font-weight-bolder">
+                    {typeof pathOr('NA', context.path, data) === 'object' &&
+                        convertToString(pathOr('NA', context.path, data))}
+                    {typeof pathOr('NA', context.path, data) !== 'object' &&
+                        pathOr('NA', context.path, data)}
+                </td>
+            </tr>
+        );
+    }
+
     return (
         isLoading ? <Loader/> :
                 <div className="certificate-status-wrapper">
@@ -124,30 +179,17 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                     {
                         isValid && <table className="mt-3">
                             {
-                                Object.keys(CertificateDetailsPaths).map((key, index) => {
-                                    const context = CertificateDetailsPaths[key];
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pr-3">{t('certificate.'+key)}</td>
-                                            <td className="font-weight-bolder">{context.format(pathOr("NA", context.path, data))}</td>
-                                        </tr>
-                                    )
-                                })
+                                Object.keys(data)
+                                .filter((keys) => keys === 'evidence' || keys === 'credentialSubject')
+                                .map((keys) => getRequiredFieldsToShow(data, keys))
+                                .map((key) => getPathAndKey(data, key))
+                                .reduce((pre, curr) => pre.concat(curr))
+                                .map((context, index) => getRow(context, index))
                             }
 
                         </table>
                     }
                     <CustomButton className="blue-btn m-3" onClick={goBack}>{t('verifyCertificate.verifyAnotherCertificate')}</CustomButton>
-                    <SmallInfoCards text={t('verifyCertificate.infoCard.0.text')}
-                                    onClick={() => {
-                                        history.push("/side-effects")
-                                    }}
-                                    img={FeedbackSmallImg} backgroundColor={"#FFFBF0"}/>
-                    <SmallInfoCards text={t('verifyCertificate.infoCard.1.text')} img={LearnProcessImg}
-                                    onClick={() => {
-                                        history.push("/learn")
-                                    }}
-                                    backgroundColor={"#EFF5FD"}/>
                 </div>
     )
 };

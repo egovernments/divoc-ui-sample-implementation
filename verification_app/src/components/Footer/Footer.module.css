@@ -19,3 +19,8 @@
     border-top: 1px solid #C1CFD933;
     padding: 30px !important;
 }
+
+.footer-img {
+    display: block;
+    margin: auto;
+}
