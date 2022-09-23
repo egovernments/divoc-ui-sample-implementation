@@ -197,7 +197,7 @@
     "revokedStatus": "Certificate Revoked",
     "suspendedStatus": "Certificate Suspended",
     "revokeText": "Your Certificate has been revoked",
-    "suspendText": "Your Certificate has been suspended",
+    "suspendText": "Your Certificate has been suspended till: {{suspendedDate}}",
     "verifyAnotherCertificate": "Verify Another Certificate",
     "infoCard": [
       {
