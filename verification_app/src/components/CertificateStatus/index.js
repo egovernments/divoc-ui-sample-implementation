@@ -52,6 +52,7 @@ export const CertificateStatus = ({certificateData, goBack}) => {
     const [data, setData] = useState({});
     const history = useHistory();
     const {t} = useTranslation();
+    console.log("CertificateStatus");
 
     setTimeout(()=>{
         try {

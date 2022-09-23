@@ -3,6 +3,7 @@ import "./index.css";
 import VerifyCertificateImg from "../../assets/img/verify-certificate.png"
 import LoadingImg from "../../assets/img/loading-buffering.gif"
 import QRCodeImg from "../../assets/img/qr-code.svg"
+import {VcCertificateStatus} from "../VcCertificateStatus";
 import {CertificateStatus} from "../CertificateStatus";
 import {CustomButton} from "../CustomButton";
 import QRScanner from "../QRScanner";
@@ -17,6 +18,7 @@ export const VerifyCertificate = () => {
     const [showTimeout, setShowTimeout] = useState(false);
     const [timerClocked, setTimerClocked] = useState(false);
     const {t} = useTranslation();
+
     const handleScan = data => {
         if (data) {
             const zip = new JSZip();
@@ -79,13 +81,21 @@ export const VerifyCertificate = () => {
                 </>
             }
             {
-                result && <CertificateStatus certificateData={result} goBack={() => {
-                    setShowScanner(false);
-                    setShowTimeout(false);
-                    setTimerClocked(false);
-                    setResult("");
-                }
-                }/>
+               result && (JSON.parse(config.CERTIFICATE_STATUS_VC) ? 
+                        <VcCertificateStatus certificateData={result} goBack={() => {
+                            setShowScanner(false);
+                            setShowTimeout(false);
+                            setTimerClocked(false);
+                            setResult("");
+                        }}/>
+                        :
+                        <CertificateStatus certificateData={result} goBack={() => {
+                            setShowScanner(false);
+                            setShowTimeout(false);
+                            setTimerClocked(false);
+                            setResult("");
+                        }}/>
+                    )
             }
             {
                 showTimeout &&
