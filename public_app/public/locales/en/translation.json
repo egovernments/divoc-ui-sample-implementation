@@ -203,7 +203,7 @@
   "verifyCertificate": {
     "title": "Verify a vaccination certificate",
     "scanWithQR": "SCAN WITH QR",
-    "validStatus": "Successful",
+    "validStatus": "Certificate Successfully Verified",
     "invalidStatus": "Invalid Certificate",
     "revokedStatus": "Certificate Revoked",
     "revokeText": "Your Certificate has been revoked",
