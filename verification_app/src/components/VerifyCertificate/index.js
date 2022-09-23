@@ -3,6 +3,7 @@ import "./index.css";
 import VerifyCertificateImg from "../../assets/img/verify-certificate.png"
 import LoadingImg from "../../assets/img/loading-buffering.gif"
 import QRCodeImg from "../../assets/img/qr-code.svg"
+import LogoImg from "../../assets/img/nav-logo.png"
 import {VcCertificateStatus} from "../VcCertificateStatus";
 import {CertificateStatus} from "../CertificateStatus";
 import {CustomButton} from "../CustomButton";
@@ -100,17 +101,24 @@ export const VerifyCertificate = () => {
             {
                 showTimeout &&
                   <>
+                      <h1 className="mt-5 text-center">{t('verifyCertificate.pageTitle')}</h1>
                       <h4 className="mt-5 text-center">{t('verifyCertificate.timeoutTitle')}</h4>
-                      <p className="font-weight-bold mt-5">{t('verifyCertificate.timeoutInfo')}</p>
-                      <ul className="mr-4">
-                          <li className="pb-2">{t('verifyCertificate.timeoutInfoList.0')}</li>
-                          <li className="pb-2">{t('verifyCertificate.timeoutInfoList.1')}</li>
-                          <li className="pb-2">{t('verifyCertificate.timeoutInfoList.2')}</li>
-                          <li className="pb-2">{t('verifyCertificate.timeoutInfoList.3')}</li>
-                      </ul>
-                      <CustomButton className="green-btn" onClick={() => onTryAgain()}>
+                      <CustomButton className="blue-btn" onClick={() => onTryAgain()}>
                           <span>{t('verifyCertificate.tryAgain')}</span>
                       </CustomButton>
+                      <div className="w-75 mx-auto text-left">
+                      <ul className="list-unstyled" >
+                          <lh className="mt-5">{t('verifyCertificate.timeoutInfo')}</lh>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.0')}</li>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.1')}</li>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.2')}</li>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.3')}</li>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.4')}</li>
+                          <li className="pb-2 pl-3">{t('verifyCertificate.timeoutInfoList.5')}</li>
+                      </ul>
+                      </div>
+                      
+                      <div className="text-centre"><img className="ml-3" src={LogoImg} alt={""}/></div>
                   </>
             }
 
