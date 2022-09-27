@@ -6,4 +6,10 @@ docker:
 	CERTIFICATE_CONTROLLER_ID="https://divoc.prod/vaccine" \
 	CERTIFICATE_PUBKEY_ID="https://ph.gov.com/i/philippines" \
 	CERTIFICATE_DID="did:philippines" \
-	docker build -t $(IMAGE) .
+	CERTIFICATE_STATUS_VC="false"
+	docker build -f Dockerfile -t $(IMAGE) .
+
+vc-docker:
+	@CERTIFICATE_STATUS_VC="true" 
+	docker build -f VC-Dockerfile -t $(IMAGE) .
+
