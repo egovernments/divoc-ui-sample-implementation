@@ -41,3 +41,8 @@
 .small-card-img {
     height: 5rem;
 }
+.mt-3 {
+    border: 1px solid;
+    border-collapse: collapse;
+    text-align: left;
+}

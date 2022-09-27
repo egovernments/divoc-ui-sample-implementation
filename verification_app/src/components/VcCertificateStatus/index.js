@@ -3,46 +3,15 @@ import "./index.css";
 import CertificateValidImg from "../../assets/img/certificate-valid.svg";
 import CertificateInValidImg from "../../assets/img/certificate-invalid.svg";
 import NextArrowImg from "../../assets/img/next-arrow.svg";
-import LearnProcessImg from "../../assets/img/leanr_more_small.png";
-import FeedbackSmallImg from "../../assets/img/feedback-small.png";
-import config, {
-    CERTIFICATE_CONTROLLER_ID,
-    CERTIFICATE_DID,
-    CERTIFICATE_NAMESPACE, CERTIFICATE_NAMESPACE_V2,
-    CERTIFICATE_PUBKEY_ID, CERTIFICATE_SIGNED_KEY_TYPE, certificatePublicKeyBase58
-} from "../../config";
 import {pathOr} from "ramda";
 import {CustomButton} from "../CustomButton";
-import {CertificateDetailsPaths} from "../../constants";
-import {addEventAction, EVENT_TYPES} from "../../redux/reducers/events";
-import {useHistory} from "react-router-dom";
 import axios from "axios";
 import {Loader} from "../Loader";
 import {useTranslation} from "react-i18next";
 
-const {contexts} = require('security-context');
-const credentialsv1 = require('../../utils/credentials.json');
-const {vaccinationContext, vaccinationContextV2} = require('vaccination-context');
-
-let signingConfig = {
-    publicKeyPem: config.certificatePublicKey,
-    publicKeyBase58: config.certificatePublicKeyBase58,
-    CERTIFICATE_DID: CERTIFICATE_DID,
-    CERTIFICATE_PUBKEY_ID: CERTIFICATE_PUBKEY_ID,
-    CERTIFICATE_CONTROLLER_ID: CERTIFICATE_CONTROLLER_ID,
-    keyType: CERTIFICATE_SIGNED_KEY_TYPE
-};
-let documentLoaderMapping = {
-    [CERTIFICATE_DID]: config.certificatePublicKey,
-    [CERTIFICATE_PUBKEY_ID]: config.certificatePublicKey,
-    "https://w3id.org/security/v1": contexts.get("https://w3id.org/security/v1"),
-    'https://www.w3.org/2018/credentials#': credentialsv1,
-    "https://www.w3.org/2018/credentials/v1": credentialsv1,
-    [CERTIFICATE_NAMESPACE]: vaccinationContext,
-    [CERTIFICATE_NAMESPACE_V2]: vaccinationContextV2,
-}
-
-let suspendedDate ="";
+let suspensionDate = "";
+let suspensionExpiry = "";
+let revocationDate = "";
 
 export const VcCertificateStatus = ({certificateData, goBack}) => {
     const [isLoading, setLoading] = useState(true);
@@ -50,7 +19,6 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
     const [isSuspended, setSuspended] = useState(false)
     const [isRevoked, setRevoked] = useState(false);
     const [data, setData] = useState({});
-    const history = useHistory();
     const {t} = useTranslation();
     
     console.log("VcCertificateStatus");
@@ -60,7 +28,7 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
             try {
                 const signedJSON = JSON.parse(certificateData);
                 const result = await verifyCertificate(signedJSON);
-                let msg = result.status.msg;
+                let meta = result.status.meta;
                 console.log(result.status)
                 switch (result.status.certificateStatus){
                     case "VALID" : 
@@ -72,12 +40,14 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                             setValid(false);
                             setRevoked(true);
                             setSuspended(true);
-                            suspendedDate = msg.substring(msg.lastIndexOf(' ') + 1);
+                            suspensionDate = meta?.startDate;
+                            suspensionExpiry = meta?.endDate;
                         break;
                     case "REVOKED":
                             setValid(false);
                             setRevoked(true);
                             setSuspended(false);
+                            revocationDate = meta?.startDate;
                         break;
                     default: 
                             setValid(false);
@@ -142,16 +112,20 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
         const t = Object.keys(temp).filter(
             (key) =>
             key !== 'type' &&
-            key.toLowerCase().indexOf('id') < 0 &&
-            key.toLowerCase().indexOf('url') < 0
+            (key.toLowerCase().indexOf('id') < 0 || key === 'certificateId') &&
+            key.toLowerCase().indexOf('url') < 0 
         );
         return { keys, t };
     }
-    
+
+    const standardizeString = (str) => {
+        return (str.charAt(0).toUpperCase()+str.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
+    }
+
     const getRow = (context, index) => {
         return (
             <tr key={index}>
-                <td className="pr-3">{context.key}</td>
+                <td className="pr-3">{standardizeString(context.key)}</td>
                 <td className="font-weight-bolder">
                     {typeof pathOr('NA', context.path, data) === 'object' &&
                         convertToString(pathOr('NA', context.path, data))}
@@ -173,11 +147,14 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                         }
                     </h3>
                     {
-                        isRevoked   && (isSuspended ? <h4>{ t('verifyCertificate.suspendText',{suspendedDate: new Date(suspendedDate)})}</h4> : <h4>{ t('verifyCertificate.revokeText')}</h4>)
+                        isRevoked   && (isSuspended ? 
+                        <><h4>{t('verifyCertificate.suspendText')}</h4><h4>{t('verifyCertificate.suspensionDate', { suspensionDate: new Date(suspensionDate).toLocaleDateString() })}</h4><h4>{t('verifyCertificate.suspensionExpiry', { suspensionExpiry: new Date(suspensionExpiry).toLocaleDateString() })}</h4></> 
+                        :
+                        <><h4>{t('verifyCertificate.revokeText')}</h4><h4>{t('verifyCertificate.revocationDate', { revocationDate: new Date(revocationDate).toLocaleDateString() })}</h4></>)
                         
                     }
                     {
-                        isValid && <table className="mt-3">
+                        isValid && <table className="mt-3" >
                             {
                                 Object.keys(data)
                                 .filter((keys) => keys === 'evidence' || keys === 'credentialSubject')
@@ -190,6 +167,9 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                         </table>
                     }
                     <CustomButton className="blue-btn m-3" onClick={goBack}>{t('verifyCertificate.verifyAnotherCertificate')}</CustomButton>
+                    {
+                        isRevoked && <h5>{t('verifyCertificate.contactForDetails')}</h5>
+                    }
                 </div>
     )
 };
