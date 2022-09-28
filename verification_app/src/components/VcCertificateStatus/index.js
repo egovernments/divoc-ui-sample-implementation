@@ -28,7 +28,6 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
             try {
                 const signedJSON = JSON.parse(certificateData);
                 const result = await verifyCertificate(signedJSON);
-                let meta = result.status.meta;
                 console.log(result.status)
                 switch (result.status.certificateStatus){
                     case "VALID" : 
@@ -40,14 +39,14 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                             setValid(false);
                             setRevoked(true);
                             setSuspended(true);
-                            suspensionDate = meta?.startDate;
-                            suspensionExpiry = meta?.endDate;
+                            suspensionDate = result.status.startDate;
+                            suspensionExpiry = result.status.endDate;
                         break;
                     case "REVOKED":
                             setValid(false);
                             setRevoked(true);
                             setSuspended(false);
-                            revocationDate = meta?.startDate;
+                            revocationDate = result.status.startDate;
                         break;
                     default: 
                             setValid(false);
@@ -125,8 +124,8 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
     const getRow = (context, index) => {
         return (
             <tr key={index}>
-                <td className="pr-3">{standardizeString(context.key)}</td>
-                <td className="font-weight-bolder">
+                <td className="px-3 text-start" >{standardizeString(context.key) + ":"}</td>
+                <td className="pe-4 fw-bolder text-start" >
                     {typeof pathOr('NA', context.path, data) === 'object' &&
                         convertToString(pathOr('NA', context.path, data))}
                     {typeof pathOr('NA', context.path, data) !== 'object' &&
@@ -154,7 +153,7 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                         
                     }
                     {
-                        isValid && <table className="mt-3" >
+                        isValid && <table className="mt-3 py-3 border border-dark " >
                             {
                                 Object.keys(data)
                                 .filter((keys) => keys === 'evidence' || keys === 'credentialSubject')

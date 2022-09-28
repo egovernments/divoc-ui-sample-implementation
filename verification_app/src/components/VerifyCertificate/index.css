@@ -4,7 +4,7 @@
   align-items: center;
   height: calc(100vh - 9rem);
   overflow: auto;
-  padding-top: 3rem;
+  padding-top: 4rem;
   padding-bottom: 3rem;
 }
 .verify-certificate-wrapper .qr-camera {
