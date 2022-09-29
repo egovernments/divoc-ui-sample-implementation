@@ -38,6 +38,7 @@ RUN npm run build
 FROM node:lts-alpine as verification_app_build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+ENV REACT_APP_CERTIFICATE_STATUS_VC 'false'
 COPY verification_app/package.json ./
 COPY verification_app/package-lock.json ./
 RUN npm install --silent

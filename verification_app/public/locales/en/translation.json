@@ -196,9 +196,13 @@
     "invalidStatus": "Invalid Certificate",
     "revokedStatus": "Certificate Revoked",
     "suspendedStatus": "Certificate Suspended",
-    "revokeText": "Your Certificate has been revoked",
-    "suspendText": "Your Certificate has been suspended till: {{suspendedDate}}",
+    "revokeText": "The Certificate has been Revoked",
+    "suspendText": "The Certificate has been Suspended",
+    "suspensionDate": "Date of Suspension: {{suspensionDate}}",
+    "revocationDate": "Date of Revocation: {{revocationDate}}",
+    "suspensionExpiry": "Suspension Expiry: {{suspensionExpiry}}",
     "verifyAnotherCertificate": "Verify Another Certificate",
+    "contactForDetails": "Kindly contact the issuing authority for this certificate to know more details",
     "infoCard": [
       {
         "text": "Provide Feedback"

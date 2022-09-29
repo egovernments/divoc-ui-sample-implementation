@@ -41,3 +41,6 @@
 .small-card-img {
     height: 5rem;
 }
+table{
+    border-collapse: separate;
+}
