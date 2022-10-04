@@ -140,11 +140,11 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                 <div className="certificate-status-wrapper">
                     <img src={isValid ? CertificateValidImg : CertificateInValidImg} alt={""}
                          className="certificate-status-image"/>
-                    <h3 className="certificate-status">
+                    <h2 className="certificate-status fw-bolder">
                         {
                             isValid ? t('verifyCertificate.validStatus') : (isRevoked ? (isSuspended ? t('verifyCertificate.suspendedStatus') : t('verifyCertificate.revokedStatus')) : t('verifyCertificate.invalidStatus'))
                         }
-                    </h3>
+                    </h2>
                     {
                         isRevoked   && (isSuspended ? 
                         <><h4>{t('verifyCertificate.suspendText')}</h4><h4>{t('verifyCertificate.suspensionDate', { suspensionDate: new Date(suspensionDate).toLocaleDateString() })}</h4><h4>{t('verifyCertificate.suspensionExpiry', { suspensionExpiry: new Date(suspensionExpiry).toLocaleDateString() })}</h4></> 
@@ -167,7 +167,7 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                     }
                     <CustomButton className="blue-btn m-3" onClick={goBack}>{t('verifyCertificate.verifyAnotherCertificate')}</CustomButton>
                     {
-                        isRevoked && <h5>{t('verifyCertificate.contactForDetails')}</h5>
+                        isRevoked && <h5 className="fw-light">{t('verifyCertificate.contactForDetails')}</h5>
                     }
                 </div>
     )
