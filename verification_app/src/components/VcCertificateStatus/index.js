@@ -167,7 +167,10 @@ export const VcCertificateStatus = ({certificateData, goBack}) => {
                     }
                     <CustomButton className="blue-btn m-3" onClick={goBack}>{t('verifyCertificate.verifyAnotherCertificate')}</CustomButton>
                     {
-                        isRevoked && <h5 className="fw-light">{t('verifyCertificate.contactForDetails')}</h5>
+                        !isValid && !isRevoked && <h5>{t('verifyCertificate.invalidText')}</h5>
+                    }
+                    {
+                        !isValid && <h5>{t('verifyCertificate.contactForDetails')}</h5>
                     }
                 </div>
     )
