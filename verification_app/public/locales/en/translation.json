@@ -193,7 +193,7 @@
     "title": "Verify a vaccination certificate",
     "scanWithQR": "SCAN WITH QR",
     "validStatus": "Certificate Successfully Verified",
-    "invalidStatus": "Invalid Certificate",
+    "invalidStatus": "Certificate Invalid",
     "revokedStatus": "Certificate Revoked",
     "suspendedStatus": "Certificate Suspended",
     "revokeText": "The Certificate has been Revoked",
