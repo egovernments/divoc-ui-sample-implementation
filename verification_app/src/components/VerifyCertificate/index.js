@@ -12,6 +12,7 @@ import JSZip from "jszip";
 import {CERTIFICATE_FILE} from "../../constants";
 import {useTranslation} from "react-i18next";
 import config from "../../config"
+import Info from "./VerifyInstructions";
 
 export const VerifyCertificate = () => {
     const [result, setResult] = useState("");
@@ -70,6 +71,7 @@ export const VerifyCertificate = () => {
                             <span>{t('verifyCertificate.scanWithQR')}</span>
                             <img className="ms-3" src={QRCodeImg} alt={""}/>
                         </CustomButton>
+                        <Info/>
                     </>}
                     {showScanner &&
                     <>

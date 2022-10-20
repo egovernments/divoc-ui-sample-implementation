@@ -190,8 +190,8 @@
     "asFhirCertificate": "As Fhir Certificate"
   },
   "verifyCertificate": {
-    "title": "Verify a vaccination certificate",
-    "scanWithQR": "SCAN WITH QR",
+    "title": "Verify DIVOC Verifiable Certificate",
+    "scanWithQR": "Scan QR code",
     "validStatus": "Certificate Successfully Verified",
     "invalidStatus": "Certificate Invalid",
     "revokedStatus": "Certificate Revoked",
@@ -219,7 +219,7 @@
       "QR code should cover at-least 70%-80% of screen",
       "Complete QR code should be part of camera frame",
       "QR code is  parallel to the camera",
-      "Camera is held steadily for at-least 5 sec",
+      "Camera is held steadily for at-least 5 seconds",
       "The QR code area is clean, not crumbled, and not tampered",
       "The contrast of your screen is not too low"
     ],
