@@ -7,7 +7,7 @@ import invalid_img from "../../assets/img/invalid-image.png";
 
 function Info() {
     return (
-        <div class="mt-5 p-4 mb-5 container">
+        <div class="mt-5 p-3 mb-5 container">
             <p>
                 The DIVOC issued Verifiable Certificate has a digitally signed
                 secure QR code.This can be authenticated online using the verification utility
@@ -17,7 +17,7 @@ function Info() {
             <ol class="verify-steps">
                 <li>Visit <a href="https://verify.divoc.org/">https://verify.divoc.org/</a></li>
                 <li>Click on <b>“Scan QR”</b> code</li>
-                <li>A notification will prompt to activate your device’s camera. Point the camera to the QR code on the bottom right of the certificate issued and scan</li>
+                <li>A notification will prompt to activate your device’s camera. Point the camera to the QR code.</li>
                 <li>Please keep the following points in mind while scanning the QR code</li>
                 <ol class="success-verify" type="a">
                     <li>QR code should cover at-least 70%-80% of screen</li>
@@ -27,10 +27,11 @@ function Info() {
                 </ol>
                 <li>If camera is unable to read the QR code within 45 seconds, a message - <b>“Camera is not able to read the QR code, please try again”</b> with a try again button will be displayed. Verifier will be required to scan the QR code again following the instructions mentioned in Step 2.</li>
                 <li>On successful verification, the following will be displayed on the screen.(Refer to the image on the side)</li>
-                <li>Message <b>“Certificate Successfully Verified”</b></li>
-                <li>Some of the attributes that will be displayed includes,but not limited are:</li>
+                
                 <div class="row">
                     <div class="col">
+                    <li>Message <b>“Certificate Successfully Verified”</b></li>
+                    <li>Some of the attributes that will be displayed includes,but not limited are:</li>
                         <ul class="success-verify">
                             <li>Name -</li>
                             <li>Certificate Issued On -</li>
