@@ -47,7 +47,7 @@ function Info() {
                     </div>
                 </div>
                 <li>Incase of an unsuccessfull verification if the certificate is not genuine or is suspended, screen will show the message <b>Certificate Invalid</b> or <b>Certificate Suspended</b> respectively. Refer to the images below.</li>
-                <li>You can view a video of 'how to verify' <a href="here">here</a> </li>
+                <li>You can view a video of 'how to verify' <a href="#">here</a> </li>
                 <div class="row">
                     <div class="col">
                         <img src={suspend_img} alt="" />
